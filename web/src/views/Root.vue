@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Model from './model/Index.vue'
+import Model from './model/ModelIndex.vue'
 
 export default {
   name: "Root",
