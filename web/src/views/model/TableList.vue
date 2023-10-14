@@ -9,7 +9,7 @@
       </div>
       <div>
         <a-popconfirm title="是否要删除" @confirm="doBatchDelete">
-        <a v-show="ctl.batchFlag">批量删除</a>
+          <a v-show="ctl.batchFlag">批量删除</a>
         </a-popconfirm>
       </div>
     </div>
@@ -23,18 +23,19 @@
       </div>
       <div>
         <a-space>
-          <a @click="">
+          <a @click="doEdit(item)">
             <EditOutlined/>
           </a>
-          <a>
-            <DeleteOutlined/>
-          </a>
+          <a-popconfirm title="确认删除" ok-text="是" cancel-text="否" @confirm="doDelete([item.tableId])">
+            <a>
+              <DeleteOutlined/>
+            </a>
+          </a-popconfirm>
         </a-space>
       </div>
     </div>
-    <div>{{tableMap}}</div>
   </div>
-  <TableEdit ref="tableEdit"/>
+  <TableEdit ref="tableEdit" @on-save="onTableSave"/>
 </template>
 <script>
 import {EditOutlined, DeleteOutlined} from "@ant-design/icons-vue";
@@ -56,26 +57,42 @@ export default {
         batchFlag: false
       },
       formData: {},
-      checkedList:[]
+      checkedList: []
     }
   },
   methods: {
     doAdd() {
       this.$refs.tableEdit.doOpen({})
     },
-    doEdit(table){
+    doEdit(table) {
       this.$refs.tableEdit.doOpen(table)
     },
     doSave() {
 
     },
+    // 按id数组删除
     doDelete(idList) {
-
+      if (!idList || idList.length === 0) {
+        return
+      }
+      // todo req
+      idList.forEach(t => {
+        this.tableMap.delete(t)
+      })
     },
-    doBatchDelete(){
-      message.success('deleted')
-      message.info("22")
-      message.warn('2234')
+    // 批量删除， 查找删除标记得到删除id数组，并调用删除方法
+    doBatchDelete() {
+      let idList = []
+      Array.from(this.tableMap.values()).forEach(t=>{
+        if(t._checked){
+          idList.push(t.tableId)
+        }
+      })
+      this.doDelete(idList)
+    },
+    // table
+    onTableSave(table) {
+      this.tableMap.set(table.tableId, table)
     }
   }
 
@@ -83,10 +100,11 @@ export default {
 </script>
 
 <style scoped>
-.tableList .tableRow,.tableAct {
+.tableList .tableRow, .tableAct {
   display: flex;
   padding: 5px;
 }
+
 .tableList .tableRow:hover {
   background-color: lightgray;
 }
