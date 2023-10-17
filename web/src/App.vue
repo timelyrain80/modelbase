@@ -3,9 +3,9 @@ import {RouterView} from 'vue-router'
 </script>
 
 <template>
-  <div>
+  <KeepAlive>
     <RouterView/>
-  </div>
+  </KeepAlive>
 </template>
 
 <style scoped>

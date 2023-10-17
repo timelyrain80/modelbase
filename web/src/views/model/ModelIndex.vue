@@ -1,63 +1,73 @@
 <template>
-  <div class="header">
-    <div>项目名称</div>
-    <div><a-input placeholder="搜索"/></div>
-    <div>
-      <a-avatar-group>
-        <a-avatar/>
-        <a-avatar/>
-        <a-avatar/>
-      </a-avatar-group>
-    </div>
-  </div>
-  <a-layout>
-    <a-layout-sider theme="light" width="300px">
-      <a-card title="数据表" :body-style="{padding:'3px'}">
-        <template #extra><a href="#" @click="doAdd">
-          <PlusCircleOutlined/>
-        </a></template>
-        <TableList ref="tableList" :tableMap="tableMap"/>
-      </a-card>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-content>2</a-layout-content>
+  <div>
+    <a-page-header :title="project.name" @back="doBack()">
+      <template #extra>
+        <div>
+          <a-avatar-group>
+            <a-avatar v-for="(item) in onlines" :title="item.name">{{item.name}}</a-avatar>
+          </a-avatar-group>
+        </div>
+      </template>
+    </a-page-header>
+    <a-layout style="height: 100%">
+      <a-layout-sider theme="light" width="300px">
+        <a-card title="数据表">
+          <template #extra><a href="#" @click="doAddTable"><PlusCircleOutlined/></a></template>
+          <TableList ref="tableList" :tableMap="tableMap" @table-selected="doSelectedTable"/>
+        </a-card>
+      </a-layout-sider>
+      <a-layout>
+        <a-layout-content>
+          <TableEdit/>
+        </a-layout-content>
+      </a-layout>
     </a-layout>
-  </a-layout>
-
+  </div>
 </template>
+
 <script>
+
 import TableList from "./TableList.vue";
+import FieldEdit from "./FieldEdit.vue";
 import {PlusCircleOutlined} from "@ant-design/icons-vue";
+import TableEdit from "./TableEdit.vue";
 
 export default {
-  name: 'Model',
-  props: {
-    projectId: {
-      type: String
-    }
-  },
-  components: {TableList, PlusCircleOutlined},
+  name: "ModelIndex",
+  components: {TableEdit, FieldEdit, TableList, PlusCircleOutlined},
   data() {
     return {
-      tableMap: new Map(), // 数据表定义
-      onlineMap: new Map(),
+      id: undefined,
+      project: {},
+      tableMap: new Map(),
+      currentTable: {},
+      onlines:[{name:'kang'},{name:'xiaojuan'}]
     }
   },
   created() {
-
+    // 查询
+    this.id = this.$route.params.id
+    this.project.name = 'kkk'
   },
-  methods:{
-    doAdd(){
+  methods: {
+    doBack() {
+      this.$router.push({path: '/index'})
+    },
+    doAddTable(){
       this.$refs.tableList.doAdd()
+    },
+    doSelectedTable(t){
+      let tmp = {}
+      Object.assign(tmp, t)
+      this.currentTable = tmp;
     }
   }
+
 }
 </script>
-<style>
-.header{
+
+<style scoped>
+.box {
   display: flex;
-  justify-content: space-between;
-  padding: 5px 30px 5px 30px;
-  justify-items: center;
 }
 </style>

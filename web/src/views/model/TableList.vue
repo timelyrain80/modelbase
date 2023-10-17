@@ -13,11 +13,13 @@
         </a-popconfirm>
       </div>
     </div>
-    <div v-for="(item, idx) in Array.from(tableMap.values())" :key="idx" class="tableRow">
+    <div v-for="(item, idx) in Array.from(tableMap.values())" :key="idx"
+         @click="doTableSelect(item)"
+         :class="['tableRow',this.selectedTableId === item.tableId ? 'tableSelected' : '']">
       <div>
         <a-checkbox v-show="ctl.batchFlag" :value="item.tableId" v-model:checked="item._checked"/>
       </div>
-      <div>
+      <div @click="doTableSelect(item)">
         <div>{{ item.label }}</div>
         <div>{{ item.code }}</div>
       </div>
@@ -35,7 +37,7 @@
       </div>
     </div>
   </div>
-  <TableEdit ref="tableEdit" @on-save="onTableSave"/>
+
 </template>
 <script>
 import {EditOutlined, DeleteOutlined} from "@ant-design/icons-vue";
@@ -57,7 +59,8 @@ export default {
         batchFlag: false
       },
       formData: {},
-      checkedList: []
+      checkedList: [],
+      selectedTableId: undefined
     }
   },
   methods: {
@@ -83,8 +86,8 @@ export default {
     // 批量删除， 查找删除标记得到删除id数组，并调用删除方法
     doBatchDelete() {
       let idList = []
-      Array.from(this.tableMap.values()).forEach(t=>{
-        if(t._checked){
+      Array.from(this.tableMap.values()).forEach(t => {
+        if (t._checked) {
           idList.push(t.tableId)
         }
       })
@@ -93,6 +96,10 @@ export default {
     // table
     onTableSave(table) {
       this.tableMap.set(table.tableId, table)
+    },
+    doTableSelect(table) {
+      this.selectedTableId = table.tableId
+      this.$emit('table-selected', table)
     }
   }
 
@@ -120,6 +127,10 @@ export default {
 
 .tableList div div:last-child {
   color: darkgrey;
+}
+
+.tableSelected {
+  background-color: lightgrey;
 }
 
 </style>
