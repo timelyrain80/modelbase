@@ -1,18 +1,17 @@
 <template>
   <div>数据表信息</div>
-  <a-form ref="tableForm" v-model="tableData" :rules="tableRules">
-    <a-form-item label="显示名称" name="tableData.label">
+  <a-form ref="tableForm" :model="tableData" :rules="tableRules">
+    <a-form-item label="显示名称" name="label">
       <a-input v-model:value="tableData.label"/>
     </a-form-item>
-    <a-form-item label="编码" name="tableData.code">
+    <a-form-item label="编码" name="code">
       <a-input v-model:value="tableData.code"/>
     </a-form-item>
-  </a-form>
-  <div>数据表字段</div>
-  <a-button @click="this.fieldData.push({})">添加</a-button>
-  <a-button @click="doCheck">check</a-button>
-<!--  <a-form ref="fieldForm">-->
-    <a-table :pagination="false" :columns="fieldHeader" :data-source="fieldData" :draggable="true">
+
+    <div>数据表字段</div>
+    <a-button @click="this.tableData.fieldData.push({})">添加</a-button>
+    <a-button @click="doCheck">check</a-button>
+    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true">
       <template #bodyCell="{text, record, index, column}">
         <div v-if="column.dataIndex=='fieldId'">
           <a-space>
@@ -28,8 +27,9 @@
             </div>
           </a-space>
         </div>
-        <a-form-item v-else-if="column.dataIndex == 'label'" :required="true">
-          <a-input v-model:value="record.label" :ref="'label_' + index"/>
+        <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'字段名不能为空'}"
+                     :name="['fieldData',index,'label']">
+          <a-input v-model:value="record.label"/>
         </a-form-item>
 
         <a-input v-else-if="column.dataIndex == 'code'" v-model:value="record.code"/>
@@ -43,7 +43,7 @@
         <a-input v-else-if="column.dataIndex == 'dict'" v-model:value="record.dict"/>
       </template>
     </a-table>
-<!--  </a-form>-->
+  </a-form>
   {{ JSON.stringify(this.fieldData) }}
 </template>
 
@@ -61,10 +61,11 @@ export default {
         label: [{required: true, message: '表名不能为空'}],
         code: [{required: true, message: '表编码不能为空'}]
       },
-      tableData: {},
-      fieldData: [{
-        fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
-      }],
+      tableData: {
+        fieldData: [{
+          fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
+        }],
+      },
       fieldHeader: [
         {title: ' ', width: 80, dataIndex: 'fieldId'},
         {title: '显示名称 *', width: 250, dataIndex: 'label'},
