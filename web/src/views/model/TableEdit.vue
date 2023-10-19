@@ -27,8 +27,7 @@
             </div>
           </a-space>
         </div>
-        <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'字段名不能为空'}"
-                     :name="['fieldData',index,'label']">
+        <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'222'}" :name="['fieldData',index,'label']">
           <a-input v-model:value="record.label"/>
         </a-form-item>
 
@@ -44,7 +43,7 @@
       </template>
     </a-table>
   </a-form>
-  {{ JSON.stringify(this.fieldData) }}
+  {{ JSON.stringify(this.tableData.fieldData) }}
 </template>
 
 <script>
@@ -83,6 +82,7 @@ export default {
   },
   methods: {
     doCheck() {
+
       this.$refs.tableForm.validate()
       // this.$refs.fieldForm.validate()
       // this.fieldData.forEach((t, idx) => {

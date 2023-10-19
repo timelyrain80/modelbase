@@ -36,7 +36,7 @@
 
 <script>
 import {UserOutlined,LockOutlined} from "@ant-design/icons-vue";
-
+import store from "../../stores/stores.js"
 export default {
   name: "Login.vue",
   components:{UserOutlined, LockOutlined},
@@ -59,6 +59,8 @@ export default {
   methods: {
     doLogin() {
       this.$refs.loginForm.valdate
+      // 设置token
+      store.useUserStore().regToken('111')
       this.$router.push({name: 'index'})
     },
     doReg() {

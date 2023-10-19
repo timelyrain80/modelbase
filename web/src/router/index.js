@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import store from '../stores/stores'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,18 +15,29 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
+            meta: {public: true},
             component: () => import('../views/sys/Login.vue')
         },
         {
             path: '/project/:id',
             name: 'project-detail',
-            component: ()=> import('../views/model/ModelIndex.vue')
+            component: () => import('../views/model/ModelIndex.vue')
         },
         {
             path: '/test',
-            component: ()=> import('../views/model/Test.vue')
+            component: () => import('../views/model/Test.vue')
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    if (!to.meta.public && !store.useUserStore().isAuthenticated) {
+        // 校验令牌
+        console.info('校验令牌', store.useUserStore().isAuthenticated)
+        next({name: 'login'})
+    } else {
+        next()
+    }
 })
 
 export default router
