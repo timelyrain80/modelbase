@@ -4,7 +4,7 @@
       <template #extra>
         <div>
           <a-avatar-group>
-            <a-avatar v-for="(item) in onlines" :title="item.name">{{item.name}}</a-avatar>
+            <a-avatar v-for="(item) in onlines" :title="item.name">{{ item.name }}</a-avatar>
           </a-avatar-group>
         </div>
       </template>
@@ -12,13 +12,15 @@
     <a-layout style="height: 100%">
       <a-layout-sider theme="light" width="300px">
         <a-card title="数据表">
-          <template #extra><a href="#" @click="doAddTable"><PlusCircleOutlined/></a></template>
+          <template #extra><a href="#" @click="doAddTable">
+            <PlusCircleOutlined/>
+          </a></template>
           <TableList ref="tableList" :tableMap="tableMap" @table-selected="doSelectedTable"/>
         </a-card>
       </a-layout-sider>
       <a-layout>
         <a-layout-content>
-          <TableEdit/>
+          <TableEdit :data-type="dataType" :table-data="currentTable"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -41,22 +43,50 @@ export default {
       project: {},
       tableMap: new Map(),
       currentTable: {},
-      onlines:[{name:'kang'},{name:'xiaojuan'}]
+      onlines: [{name: 'kang'}, {name: 'xiaojuan'}],
+      dataType: {
+        varchar: {
+          label: 'varchar',
+          value: 'varchar',
+          showSize: true,
+          showPrecision: false,
+        },
+        int: {
+          label: 'int',
+          value: 'int',
+          showSize: false,
+          showPrecision: false,
+        }
+      },
     }
   },
   created() {
     // 查询
     this.id = this.$route.params.id
     this.project.name = 'kkk'
+    this.tableMap.set("ddddd", {
+      label: '中文',
+      code: 'prf_setting',
+      fieldData: [{
+        fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
+      }],
+    })
+    this.tableMap.set("aaaa", {
+      label: '中文222222',
+      code: 'prf_setting',
+      fieldData: [{
+        fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
+      }],
+    })
   },
   methods: {
     doBack() {
       this.$router.push({path: '/index'})
     },
-    doAddTable(){
+    doAddTable() {
       this.$refs.tableList.doAdd()
     },
-    doSelectedTable(t){
+    doSelectedTable(t) {
       let tmp = {}
       Object.assign(tmp, t)
       this.currentTable = tmp;
