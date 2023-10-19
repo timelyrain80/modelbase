@@ -11,7 +11,7 @@
     <div>数据表字段</div>
     <a-button @click="this.tableData.fieldData.push({})">添加</a-button>
     <a-button @click="doCheck">check</a-button>
-    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true">
+    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true" size="small">
       <template #bodyCell="{text, record, index, column}">
         <div v-if="column.dataIndex=='fieldId'">
           <a-space>
@@ -28,6 +28,9 @@
           </a-space>
         </div>
         <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'222'}" :name="['fieldData',index,'label']">
+          <template #tooltip>
+11
+          </template>
           <a-input v-model:value="record.label"/>
         </a-form-item>
 
@@ -118,5 +121,7 @@ export default {
 </script>
 
 <style scoped>
-
+.ant-form-item{
+  margin-bottom: 0;
+}
 </style>
