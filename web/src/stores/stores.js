@@ -12,6 +12,7 @@ import { defineStore } from 'pinia'
 // })
 
 export default {
+  // 作废 改为 sessionStorage
   useUserStore : defineStore('user', {
     state: ()=> ({
       token: undefined,

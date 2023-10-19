@@ -1,17 +1,35 @@
 <template>
-  <div>数据表信息</div>
   <a-form ref="tableForm" :model="tableData" :rules="tableRules">
-    <a-form-item label="显示名称" name="label">
-      <a-input v-model:value="tableData.label"/>
-    </a-form-item>
-    <a-form-item label="编码" name="code">
-      <a-input v-model:value="tableData.code"/>
-    </a-form-item>
-
-    <div>数据表字段</div>
-    <a-button @click="this.tableData.fieldData.push({})">添加</a-button>
-    <a-button @click="doCheck">check</a-button>
-    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true" size="small">
+    <a-page-header>
+      <template #title>
+        <span v-if="!ctl.editTable">{{ tableData.label }}</span>
+        <a-form-item name="label" v-else label="表名称">
+          <a-input v-model:value="tableData.label" placeholder="表名称"/>
+        </a-form-item>
+      </template>
+      <template #subTitle>
+        <a-space>
+          <span v-if="!ctl.editTable">{{ tableData.code }}</span>
+          <a-form-item name="code" v-else label="表编码">
+            <a-input v-model:value="tableData.code" placeholder="表编码"/>
+          </a-form-item>
+          <a @click="ctl.editTable = !ctl.editTable" v-if="!ctl.editTable">
+            <FormOutlined/>
+          </a>
+        </a-space>
+      </template>
+      <template #extra>
+        <a-button @click="doReset">重置</a-button>
+        <a-button type="primary">保存</a-button>
+      </template>
+    </a-page-header>
+    <a-divider/>
+    <div class="action-bar">
+      <a-button @click="this.tableData.fieldData.push({})">添加</a-button>
+      <a-button @click="this.tableData.fieldData.push({})">删除</a-button>
+    </div>
+    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true"
+             size="small">
       <template #bodyCell="{text, record, index, column}">
         <div v-if="column.dataIndex=='fieldId'">
           <a-space>
@@ -27,9 +45,10 @@
             </div>
           </a-space>
         </div>
-        <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'222'}" :name="['fieldData',index,'label']">
+        <a-form-item v-else-if="column.dataIndex == 'label'" :rules="{required:true,message:'222'}"
+                     :name="['fieldData',index,'label']">
           <template #tooltip>
-11
+            11
           </template>
           <a-input v-model:value="record.label"/>
         </a-form-item>
@@ -38,32 +57,52 @@
         <a-checkbox v-else-if="column.dataIndex == 'pk'" v-model:checked="record.pk"/>
         <a-checkbox v-else-if="column.dataIndex == 'notNull'" v-model:checked="record.notNull"/>
         <a-checkbox v-else-if="column.dataIndex == 'autoIncrease'" v-model:checked="record.autoIncrease"/>
-        <a-select v-else-if="column.dataIndex == 'dataType'" v-model:value="record.dataType"/>
-        <a-input-number v-else-if="column.dataIndex == 'size'" v-model:value="record.size" style="width: 80px"/>
-        <a-input-number v-else-if="column.dataIndex == 'precision'" v-model:value="record.precision"/>
+        <a-select v-else-if="column.dataIndex == 'dataType'" v-model:value="record.dataType" style="width: 100px"
+                  :options="Object.values(this.dataType)"/>
+        <a-input-number v-else-if="column.dataIndex == 'size'" v-model:value="record.size" style="width: 80px"
+                        v-if="shown(record)[0]"/>
+        <a-input-number v-else-if="column.dataIndex == 'precision'" v-model:value="record.precision"
+                        v-if="shown(record)[1]"/>
         <a-input v-else-if="column.dataIndex == 'comment'" v-model:value="record.comment"/>
         <a-input v-else-if="column.dataIndex == 'dict'" v-model:value="record.dict"/>
       </template>
     </a-table>
   </a-form>
   {{ JSON.stringify(this.tableData.fieldData) }}
+
 </template>
 
 <script>
-import {FullscreenOutlined, FullscreenExitOutlined} from "@ant-design/icons-vue";
+import {FormOutlined, FullscreenExitOutlined, FullscreenOutlined} from "@ant-design/icons-vue";
 import {message} from "ant-design-vue";
 
 export default {
   name: "TableEdit",
-  components: {FullscreenOutlined, FullscreenExitOutlined},
+  components: {FullscreenOutlined, FullscreenExitOutlined, FormOutlined},
   data() {
     return {
-      ctl: {open: false},
+      ctl: {editTable: false},
       tableRules: {
         label: [{required: true, message: '表名不能为空'}],
         code: [{required: true, message: '表编码不能为空'}]
       },
+      dataType: {
+        varchar: {
+          label: 'varchar',
+          value: 'varchar',
+          showSize: true,
+          showPrecision: false,
+        },
+        int: {
+          label: 'int',
+          value: 'int',
+          showSize: false,
+          showPrecision: false,
+        }
+      },
       tableData: {
+        label: '中文',
+        code: 'prf_setting',
         fieldData: [{
           fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
         }],
@@ -84,9 +123,21 @@ export default {
     }
   },
   methods: {
+    shown(field) {
+      const t = this.dataType[field.dataType]
+      if (t) {
+        return [t.showSize, t.showPrecision]
+      } else {
+        return [false, false]
+      }
+    },
+    doReset() {
+      this.$refs.tableForm.resetFields()
+      this.ctl.editTable = false
+    },
     doCheck() {
 
-      this.$refs.tableForm.validate()
+
       // this.$refs.fieldForm.validate()
       // this.fieldData.forEach((t, idx) => {
       //   if (!t.label || t.label == '') {
@@ -115,13 +166,12 @@ export default {
       this.$emit('on-save', this.formData)
       this.doClose()
     }
-
-  }
+  },
 }
 </script>
 
 <style scoped>
-.ant-form-item{
+.ant-form-item {
   margin-bottom: 0;
 }
 </style>

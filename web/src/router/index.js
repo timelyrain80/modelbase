@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import store from '../stores/stores'
-
+import session from '../utils/sessionStorage.js'
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -31,9 +30,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (!to.meta.public && !store.useUserStore().isAuthenticated) {
+    const authed = session.user.isAuthenticated();
+    if (!to.meta.public && !authed) {
         // 校验令牌
-        console.info('校验令牌', store.useUserStore().isAuthenticated)
+        console.info('校验令牌', authed)
         next({name: 'login'})
     } else {
         next()

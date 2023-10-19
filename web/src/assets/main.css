@@ -1,5 +1,9 @@
 @import './base.css';
 
+body {
+    background-color: white;
+}
+
 #app {
     margin: 0 auto;
     font-weight: normal;
@@ -19,4 +23,15 @@
 
 .v-center {
     align-items: center;
+}
+
+.sub-title {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 20px 20px 20px 20px;
+}
+
+.action-bar {
+    padding-right: 8px;
+    text-align: right;
 }
