@@ -1,6 +1,9 @@
-debug: true
-
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: QSKxB89WvP@Xx
+    url: jdbc:mysql://192.168.1.20:3306/modeler
   data:
     redis:
       host: 192.168.1.20
