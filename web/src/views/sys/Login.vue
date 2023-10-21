@@ -36,7 +36,7 @@
 
 <script>
 import {UserOutlined,LockOutlined} from "@ant-design/icons-vue";
-import session from "../../utils/sessionStorage.js"
+import user from '../../request/User.js'
 export default {
   name: "Login.vue",
   components:{UserOutlined, LockOutlined},
@@ -53,14 +53,23 @@ export default {
         }
 
       },
-      formData: {}
+      formData: {
+        username: 'admin',
+        password: '1'
+      }
     }
   },
   methods: {
     doLogin() {
       this.$refs.loginForm.validate().then(() => {
-        session.user.setToken(this.formData.password)
-        this.$router.push({name: 'index'})
+        // session.user.setToken(this.formData.password)
+        user.login(this.formData).then(resp => {
+          console.info('then execute')
+          // this.$router.push({name: 'index'})
+        }, err => {
+
+        })
+
       })
 
     },
