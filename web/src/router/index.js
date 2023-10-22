@@ -4,6 +4,10 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
+            path: '/',
+            redirect: '/index'
+        },
+        {
             path: '/index',
             name: 'index',
             // route level code-splitting
@@ -30,14 +34,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    const authed = session.user.isAuthenticated();
-    if (!to.meta.public && !authed) {
-        // 校验令牌
-        console.info('校验令牌', authed)
-        next({name: 'login'})
-    } else {
-        next()
-    }
+    // 使用了cookie 不再设置导航守卫
+    next()
+    // const authed = session.user.isAuthenticated();
+    // if (!to.meta.public && !authed) {
+    //     // 校验令牌
+    //     console.info('校验令牌', authed)
+    //     next({name: 'login'})
+    // } else {
+    //     next()
+    // }
 })
 
 export default router

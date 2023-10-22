@@ -4,14 +4,14 @@
       <template #title>
         <span v-if="!ctl.editTable">{{ tableData.label }}</span>
         <a-form-item name="label" v-else label="表名称">
-          <a-input v-model:value="tableData.label" placeholder="表名称"/>
+          <a-input v-model:value="tableData.label" placeholder="表名称" @change="this.tableData._changed = true"/>
         </a-form-item>
       </template>
       <template #subTitle>
         <a-space>
           <span v-if="!ctl.editTable">{{ tableData.code }}</span>
           <a-form-item name="code" v-else label="表编码">
-            <a-input v-model:value="tableData.code" placeholder="表编码"/>
+            <a-input v-model:value="tableData.code" placeholder="表编码" @change="this.tableData._changed = true"/>
           </a-form-item>
           <a @click="ctl.editTable = !ctl.editTable" v-if="!ctl.editTable">
             <FormOutlined/>
@@ -58,6 +58,8 @@ export default {
     doReset() {
       this.$refs.tableForm.resetFields()
       this.ctl.editTable = false
+      this.tableData._changed = false
+
     },
 
     doOpen(table) {

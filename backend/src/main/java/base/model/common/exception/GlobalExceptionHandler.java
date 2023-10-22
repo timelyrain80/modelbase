@@ -1,6 +1,8 @@
 package base.model.common.exception;
 
 
+import cn.dev33.satoken.exception.NotLoginException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +14,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 @ResponseBody
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ProblemDetail> exception(Exception e) {
+        log.error("拦截器错误", e);
         return createProblem("内部错误", null);
+    }
+
+    @ExceptionHandler(NotLoginException.class)
+    ResponseEntity<ProblemDetail> exception(NotLoginException e) {
+        return createProblem("登录信息不存在", null, HttpStatus.UNAUTHORIZED.value());
     }
 
     @ExceptionHandler(IllegalStateException.class)

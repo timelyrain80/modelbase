@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="login-panel">
-      <a-form ref="loginForm" :model="formData" label-align="right" layout="horizontal" :label-col="{span:5}" :rules="rules" @finish="doLogin">
+      <a-form ref="loginForm" :model="formData" label-align="right" layout="horizontal" :label-col="{span:5}"
+              :rules="rules" @finish="doLogin">
         <a-form-item label="用户名" name="username">
           <a-input v-model:value="formData.username">
             <template #prefix>
@@ -35,11 +36,13 @@
 </template>
 
 <script>
-import {UserOutlined,LockOutlined} from "@ant-design/icons-vue";
+import {UserOutlined, LockOutlined} from "@ant-design/icons-vue";
 import user from '../../request/User.js'
+import {message} from "ant-design-vue";
+
 export default {
   name: "Login.vue",
-  components:{UserOutlined, LockOutlined},
+  components: {UserOutlined, LockOutlined},
   data() {
     return {
       rules: {
@@ -51,7 +54,6 @@ export default {
           required: true,
           message: '请输入用户名'
         }
-
       },
       formData: {
         username: 'admin',
@@ -62,14 +64,11 @@ export default {
   methods: {
     doLogin() {
       this.$refs.loginForm.validate().then(() => {
-        // session.user.setToken(this.formData.password)
         user.login(this.formData).then(resp => {
-          console.info('then execute')
-          // this.$router.push({name: 'index'})
-        }, err => {
-
+          this.$router.push('/index')
+        },err=>{
+          message.error(err.title)
         })
-
       })
 
     },
