@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-page-header :title="project.name" @back="doBack()">
+    <a-page-header :title="project.projectName" @back="doBack()">
       <template #extra>
         <div>
           <a-avatar-group>
@@ -25,7 +25,10 @@
       </a-layout-sider>
       <a-layout>
         <a-layout-content>
-          <TableEdit :data-type="dataType" :table-data="currentTable" ref="tableEditPanel"/>
+          <TableEdit :project-id="this.project.id"
+                     :data-type="dataType"
+                     :table-data="currentTable"
+                     ref="tableEditPanel"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -39,7 +42,8 @@ import FieldEdit from "./FieldEdit.vue";
 import {PlusCircleOutlined} from "@ant-design/icons-vue";
 import TableEdit from "./TableEdit.vue";
 import TableItem from "@/views/design/TableItem.vue";
-import {Modal} from 'ant-design-vue';
+import {message, Modal} from 'ant-design-vue';
+import project from "@/request/Project";
 
 export default {
   name: "ModelIndex",
@@ -49,7 +53,12 @@ export default {
       id: undefined,
       project: {},
       tableMap: new Map(),
-      currentTable: {},
+      fieldMap: new Map(),
+      currentTable: {
+        tableId: null,
+        table: {},
+        fieldList: []
+      },
       onlines: [{name: 'kang'}, {name: 'xiaojuan'}],
       dataType: {
         varchar: {
@@ -70,44 +79,54 @@ export default {
   created() {
     // 查询
     this.id = this.$route.params.id
-    this.project.name = 'kkk'
-    this.tableMap.set("ddddd", {
-      label: '中文',
-      code: 'prf_setting',
-      tableId: '1',
-      fieldData: [{
-        fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
-      }],
-    })
-    this.tableMap.set("aaaa", {
-      label: '中文222222',
-      code: 'prf_setting',
-      tableId: '2',
-      fieldData: [{
-        fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
-      }],
-    })
+    this.doQuery()
   },
   methods: {
+    doQuery() {
+      project.detail(this.id).then(r => {
+        this.project = r.data.project
+
+        if (r.data.tableList) {
+          r.data.tableList.forEach(t => {
+            this.tableMap.set(t.tableId, t)
+          })
+        }
+        if (r.data.fieldList) {
+          r.data.fieldList.forEach(t => {
+            this.fieldMap.set(t.fieldId, t)
+          })
+        }
+
+      }, e => {
+        console.error(e)
+        message.error(e.title)
+      })
+    },
+
     doBack() {
       this.$router.push({path: '/index'})
     },
     openTable(t) {
-      let tmp = {}
-      Object.assign(tmp, t)
-      this.currentTable = tmp;
+      let table = {}
+      this.table.table = this.tableMap.get(t)
+      if (!this.table.table) {
+        this.table.table = {}
+      }
+      table.fieldList = Array.from(this.fieldMap.values()).filter(t => t.tableId === t)
+
+      this.currentTable = table;
     },
-    checkAndOpenTable(table) {
+    checkAndOpenTable(tableId) {
       if (this.$refs.tableEditPanel.checkModified()) {
         Modal.confirm({
           title: '数据表已修改',
           content: '是否放弃修改的内容?',
           onOk: () => {
-            this.openTable(table)
+            this.openTable(tableId)
           }
         })
       } else {
-        this.openTable(table)
+        this.openTable(tableId)
       }
     }
   }

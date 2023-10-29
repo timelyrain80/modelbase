@@ -13,20 +13,14 @@ import java.util.Collection;
 @TableName("m_table")
 public class Table extends VersionEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    Long projectId;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     Long tableId;
 
-    @TableField("table_label")
     @NotNull(message = "请输入名称")
     String label;
 
-    @TableField("table_code")
     @NotNull(message = "请输入代码")
     String code;
 
-    @TableField("table_comment")
     @Size(max = 100, message = "注释长度不能超过100")
     String comment;
 

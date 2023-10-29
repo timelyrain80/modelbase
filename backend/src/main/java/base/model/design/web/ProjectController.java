@@ -1,17 +1,16 @@
 package base.model.design.web;
 
 import base.model.design.pojo.Project;
+import base.model.design.pojo.ProjectDetailDto;
 import base.model.design.service.ProjectService;
 import base.model.common.ModelConstants;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,5 +40,11 @@ public class ProjectController {
     @PostMapping("my-project")
     ResponseEntity<List<Project>> queryMyProject() {
         return ResponseEntity.ok(service.queryProject());
+    }
+
+    @GetMapping("{id}")
+    ResponseEntity<ProjectDetailDto> detail(@PathVariable("id") Long projectId) {
+        Assert.state(projectId != null, "参数不合法");
+        return ResponseEntity.ok(service.queryDetail(projectId));
     }
 }

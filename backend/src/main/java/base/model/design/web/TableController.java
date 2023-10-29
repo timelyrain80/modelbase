@@ -1,6 +1,8 @@
 package base.model.design.web;
 
+import base.model.design.pojo.ProjectDetailDto;
 import base.model.design.pojo.Table;
+import base.model.design.pojo.TableDeleteDto;
 import base.model.design.pojo.TableDto;
 import base.model.design.service.TableService;
 import jakarta.annotation.Resource;
@@ -21,20 +23,14 @@ public class TableController {
     TableService tableService;
 
 
-    @GetMapping("{projectId}")
-    public ResponseEntity<Collection<Table>> listTable(@NotNull(message = "项目id不能为空") @PathVariable("projectId") Long projectId) {
-        return ResponseEntity.ok(this.tableService.queryLatestTable(projectId));
-    }
-
-
     @PostMapping()
-    public ResponseEntity<Table> save(@RequestBody TableDto table) {
+    public ResponseEntity<TableDto> save(@RequestBody TableDto table) {
         return ResponseEntity.ok(this.tableService.saveTable(table));
     }
 
     @PostMapping("delete")
-    public ResponseEntity delete(@Validated @NotEmpty Collection<Long> tableIdList) {
-        this.tableService.deleteTable(tableIdList);
+    public ResponseEntity delete(@Validated @RequestBody TableDeleteDto dto) {
+        this.tableService.updateForDeleteTable(dto.getProjectId(), dto.getTableIdList());
         return ResponseEntity.ok().build();
     }
 }

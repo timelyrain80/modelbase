@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="base.model.design.mapper.FieldMapper">
+
+    <select id="queryLatestField" resultType="base.model.design.pojo.Field">
+        select *
+        from (select t.*, row_number() over (partition by table_id order by create_time, id desc) as rn
+              from m_field t
+              where t.project_id = #{projectId}) v
+        where v.rn = 1
+    </select>
+</mapper>

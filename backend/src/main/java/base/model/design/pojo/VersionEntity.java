@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedBy;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 public class VersionEntity implements Serializable {
@@ -17,14 +18,14 @@ public class VersionEntity implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     Long id;
 
-    @CreatedBy
-    @TableField(fill = FieldFill.INSERT)
-    private String createBy;
-
-    @TableField(fill = FieldFill.INSERT)
-    private Timestamp createTime;
-
-    private boolean deleted = false;
-
     Long projectId;
+
+    @TableField(fill = FieldFill.INSERT)
+    Long createBy;
+
+    @TableField(fill = FieldFill.INSERT)
+    LocalDateTime createTime;
+
+    boolean deleted = false;
+
 }

@@ -9,6 +9,9 @@ export default {
     },
     save(form) {
         return request.post('project/save', form)
+    },
+    detail(id){
+        return request.get(`project/${id}`)
     }
 
 }

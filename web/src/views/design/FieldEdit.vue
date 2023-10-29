@@ -23,20 +23,25 @@
             </div>
           </a-space>
         </div>
-        <a-form-item v-else-if="column.dataIndex === 'label'" :rules="{required:true,message:'222'}"
-                     :name="['fieldList',index,'label']">
-          <template #tooltip>
-            11
-          </template>
+        <a-form-item v-else-if="column.dataIndex === 'label'"
+                     :rules="{required:true,message: '不能为空'}"
+                     :name="['fieldList', index, 'label']">
           <a-input v-model:value="record.label"/>
         </a-form-item>
-
-        <a-input v-else-if="column.dataIndex === 'code'" v-model:value="record.code"/>
+        <a-form-item v-else-if="column.dataIndex === 'code'"
+                     :rules="{required:true, message: '不能为空'}"
+                     :name="['fieldList', index, 'code']">
+          <a-input v-model:value="record.code"/>
+        </a-form-item>
         <a-checkbox v-else-if="column.dataIndex === 'pk'" v-model:checked="record.pk"/>
         <a-checkbox v-else-if="column.dataIndex === 'notNull'" v-model:checked="record.notNull"/>
         <a-checkbox v-else-if="column.dataIndex === 'autoIncrease'" v-model:checked="record.autoIncrease"/>
-        <a-select v-else-if="column.dataIndex === 'dataType'" v-model:value="record.dataType" style="width: 100px"
-                  :options="Object.values(this.dataType)"/>
+        <a-form-item v-else-if="column.dataIndex === 'dataType'"
+                     :rules="{required:true, message: '不能为空'}"
+                     :name="['fieldList', index, 'dataType']">
+          <a-select v-model:value="record.dataType" style="width: 100px"
+                    :options="Object.values(this.dataType)"/>
+        </a-form-item>
         <a-input-number v-else-if="column.dataIndex === 'size'" v-model:value="record.size" style="width: 80px"
                         v-if="shown(record)[0]"/>
         <a-input-number v-else-if="column.dataIndex === 'precision'" v-model:value="record.precision"

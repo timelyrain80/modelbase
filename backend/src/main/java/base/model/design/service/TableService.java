@@ -2,10 +2,7 @@ package base.model.design.service;
 
 import base.model.common.exception.BadRequestException;
 import base.model.design.mapper.TableMapper;
-import base.model.design.pojo.ActDto;
-import base.model.design.pojo.Field;
-import base.model.design.pojo.Table;
-import base.model.design.pojo.TableDto;
+import base.model.design.pojo.*;
 import cn.hutool.core.lang.Assert;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static base.model.config.RedisConfig.CHANGE_SUBSCRBE;
 
@@ -38,36 +34,28 @@ public class TableService extends VersionService<TableMapper, Table> {
         return this.lambdaQuery().eq(Table::getTableId, tableId).orderByDesc(Table::getTableId).list();
     }
 
-    public void cascadeDelete(Collection<Long> projectIdList) {
-        if (projectIdList == null || projectIdList.isEmpty()) {
-            return;
-        }
-        Collection<Long> tableIdList = this.lambdaQuery().in(Table::getProjectId, projectIdList)
-                .list().stream()
-                .map(Table::getTableId).collect(Collectors.toSet());
-        this.deleteTable(tableIdList);
-    }
-
-    public void deleteTable(Collection<Long> tableIdList) {
+    public void updateForDeleteTable(Long projectId, Collection<Long> tableIdList) {
         if (tableIdList == null || tableIdList.isEmpty()) {
             return;
         }
-        // 删除表
-        this.lambdaUpdate().in(Table::getTableId, tableIdList)
+        // 设置删除状态
+        this.lambdaUpdate()
+                .in(Table::getTableId, tableIdList)
+                .eq(Table::getProjectId, projectId)
                 .set(Table::isDeleted, true)
                 .update();
         // 获取更新后的table信息
         List<Table> tableList = this.lambdaQuery().in(Table::getTableId, tableIdList).list();
         tableList.forEach(t -> {
             // 广播变动
-            redisTemplate.convertAndSend(CHANGE_SUBSCRBE, ActDto.save(t.getProjectId(), t));
+            redisTemplate.convertAndSend(CHANGE_SUBSCRBE, ActDto.del(t.getProjectId(), t));
         });
     }
 
     /**
      * 新增一个table版本
      */
-    public Table saveVersion(Table entity, Function<Table, Long> getter, BiConsumer<Table, Long> setter) {
+    public Table saveVersion(Long projectId, Table entity, Function<Table, Long> getter, BiConsumer<Table, Long> setter) {
         // 检查
         long sameCount = this.lambdaQuery()
                 .eq(Table::getProjectId, entity.getProjectId())
@@ -75,22 +63,33 @@ public class TableService extends VersionService<TableMapper, Table> {
                 .and((c1) -> c1.eq(Table::getLabel, entity.getLabel()).or((c2) -> c2.eq(Table::getCode, entity.getCode())))
                 .count();
         Assert.isTrue(sameCount == 0, () -> new BadRequestException("表名称不能为重复"));
-
-        Table table = super.saveVersion(entity, getter, setter);
+        Table table = super.saveVersion(projectId, entity, getter, setter);
         redisTemplate.convertAndSend(CHANGE_SUBSCRBE, ActDto.save(table.getProjectId(), table));
         return table;
     }
 
-    public Table saveTable(TableDto table) {
-        // 判断并保存table
-        Table entity = new Table();
-        BeanUtils.copyProperties(table, entity);
-        this.saveVersion(entity, Table::getTableId, Table::setTableId);
-        // 判断并保存field
+    public TableDto saveTable(TableDto table) {
+        // todo 检查是否存在越权
 
-        fieldService.saveVersion(table.getProjectId(), table.getFieldList(), Field::getFieldId, Field::setFieldId);
+
+        // 判断并保存table
+        if (table.getTable() != null) {
+            Table entity = new Table();
+            BeanUtils.copyProperties(table.getTable(), entity);
+            // 有tableId的时候 新增版本。无tableId 生成新的tableId ，保存初始版本
+            Table saved = this.saveVersion(table.getProjectId(), entity, Table::getTableId, Table::setTableId);
+            table.setTableId(saved.getTableId());
+            table.setTable(saved);
+        }
+        // 判断并保存field
+        if (table.getFieldList() != null) {
+            for (Field f : table.getFieldList()) {
+                f.setTableId(table.getTableId());
+                fieldService.saveVersion(table.getProjectId(), f, Field::getFieldId, Field::setFieldId);
+            }
+        }
         // 删除字段
-        fieldService.updateToDeleted(table.getProjectId(), table.getDeleteFieldIdList());
-        return null;
+        fieldService.updateForDeleteField(table.getProjectId(), table.getDeleteFieldIdList());
+        return table;
     }
 }
