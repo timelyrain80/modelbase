@@ -12,15 +12,20 @@
     <a-layout style="height: 100%">
       <a-layout-sider theme="light" width="300px">
         <a-card title="数据表">
-          <template #extra><a href="#" @click="doAddTable">
+          <template #extra><a href="#" @click="checkAndOpenTable({})">
             <PlusCircleOutlined/>
           </a></template>
-          <TableList ref="tableList" :tableMap="tableMap" @table-selected="doSelectedTable"/>
+          <TableItem v-for="(item,idx) in Array.from(tableMap.values())"
+                     :table="item"
+                     :checkable="true"
+                     :selected="item.tableId === currentTable.tableId"
+                     @select="checkAndOpenTable(item)"/>
+
         </a-card>
       </a-layout-sider>
       <a-layout>
         <a-layout-content>
-          <TableEdit :data-type="dataType" :table-data="currentTable"/>
+          <TableEdit :data-type="dataType" :table-data="currentTable" ref="tableEditPanel"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -33,10 +38,12 @@ import TableList from "./TableList.vue";
 import FieldEdit from "./FieldEdit.vue";
 import {PlusCircleOutlined} from "@ant-design/icons-vue";
 import TableEdit from "./TableEdit.vue";
+import TableItem from "@/views/design/TableItem.vue";
+import {Modal} from 'ant-design-vue';
 
 export default {
   name: "ModelIndex",
-  components: {TableEdit, FieldEdit, TableList, PlusCircleOutlined},
+  components: {Modal, TableItem, TableEdit, FieldEdit, TableList, PlusCircleOutlined},
   data() {
     return {
       id: undefined,
@@ -67,6 +74,7 @@ export default {
     this.tableMap.set("ddddd", {
       label: '中文',
       code: 'prf_setting',
+      tableId: '1',
       fieldData: [{
         fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
       }],
@@ -74,6 +82,7 @@ export default {
     this.tableMap.set("aaaa", {
       label: '中文222222',
       code: 'prf_setting',
+      tableId: '2',
       fieldData: [{
         fieldId: '1', label: '主键', code: 'code', pk: true, shown: false
       }],
@@ -83,13 +92,23 @@ export default {
     doBack() {
       this.$router.push({path: '/index'})
     },
-    doAddTable() {
-      this.$refs.tableList.doAdd()
-    },
-    doSelectedTable(t) {
+    openTable(t) {
       let tmp = {}
       Object.assign(tmp, t)
       this.currentTable = tmp;
+    },
+    checkAndOpenTable(table) {
+      if (this.$refs.tableEditPanel.checkModified()) {
+        Modal.confirm({
+          title: '数据表已修改',
+          content: '是否放弃修改的内容?',
+          onOk: () => {
+            this.openTable(table)
+          }
+        })
+      } else {
+        this.openTable(table)
+      }
     }
   }
 

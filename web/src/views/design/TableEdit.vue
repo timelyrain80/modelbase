@@ -2,14 +2,14 @@
   <a-form ref="tableForm" :model="tableData" :rules="tableRules">
     <a-page-header>
       <template #title>
-        <span v-if="!ctl.editTable">{{ tableData.label }}</span>
+        <span v-if="!ctl.editTable && this.tableData.tableId">{{ tableData.label }}</span>
         <a-form-item name="label" v-else label="表名称">
           <a-input v-model:value="tableData.label" placeholder="表名称" @change="this.tableData._changed = true"/>
         </a-form-item>
       </template>
       <template #subTitle>
         <a-space>
-          <span v-if="!ctl.editTable">{{ tableData.code }}</span>
+          <span v-if="!ctl.editTable && this.tableData.tableId ">{{ tableData.code }}</span>
           <a-form-item name="code" v-else label="表编码">
             <a-input v-model:value="tableData.code" placeholder="表编码" @change="this.tableData._changed = true"/>
           </a-form-item>
@@ -43,7 +43,7 @@ export default {
     },
     tableData: {
       type: Object
-    }
+    },
   },
   data() {
     return {
@@ -55,30 +55,25 @@ export default {
     }
   },
   methods: {
+    checkModified() {
+      let modified = false
+      modified = modified || this.tableData._changed
+
+      return modified
+    },
     doReset() {
       this.$refs.tableForm.resetFields()
-      this.ctl.editTable = false
       this.tableData._changed = false
-
-    },
-
-    doOpen(table) {
-      let temp = {}
-      Object.assign(temp, table)
-      this.formData = temp
-      this.ctl.open = true
-    },
-    doClose() {
-      this.formData = {}
-      this.ctl.open = false
     },
     doSave() {
       this.$refs.tableForm.validate().then(() => {
-        message.success('saved')
+        if (!this.tableData.fieldList || this.tableData.fieldList.length === 0) {
+          message.error('数据表至少要添加一个字段')
+        }
         if (!this.formData.tableId) {
           this.formData.tableId = new Date().getTime()
         }
-        this.$emit('on-save', this.formData)
+        this.$emit('save', this.formData)
         this.doClose()
       }).catch(err => {
 

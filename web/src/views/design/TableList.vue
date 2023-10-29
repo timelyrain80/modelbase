@@ -16,7 +16,9 @@
     <TableItem v-for="(item, idx) in Array.from(tableMap.values())" :key="idx"
          @click="doTableSelect(item)"
          :checkable="this.ctl.batchFlag"
-         :selected="this.selectedTableId === item.tableId"/>
+               :selected="this.selectedTableId === item.tableId"
+               :table="item"
+    />
   </div>
 
 </template>

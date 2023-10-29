@@ -1,10 +1,12 @@
 <template>
   <div>
     <div class="action-bar">
-      <a-button @click="this.tableData.fieldData.push({})">添加</a-button>
-      <a-button @click="this.tableData.fieldData.push({})">删除</a-button>
+      <a-button @click="doAddRow">添加</a-button>
+      <a-button @click="doRemoveRow">删除</a-button>
     </div>
-    <a-table :pagination="false" :columns="fieldHeader" :data-source="tableData.fieldData" :draggable="true"
+    <a-table :pagination="false" :columns="fieldHeader"
+             :data-source="this.tableData.fieldList ? this.tableData.fieldList : []"
+             :draggable="true"
              size="small">
       <template #bodyCell="{text, record, index, column}">
         <div v-if="column.dataIndex==='fieldId'">
@@ -22,7 +24,7 @@
           </a-space>
         </div>
         <a-form-item v-else-if="column.dataIndex === 'label'" :rules="{required:true,message:'222'}"
-                     :name="['fieldData',index,'label']">
+                     :name="['fieldList',index,'label']">
           <template #tooltip>
             11
           </template>
@@ -86,7 +88,30 @@ export default {
         return [false, false]
       }
     },
-  }
+    doAddRow() {
+      if (!this.tableData.fieldList) {
+        this.tableData.fieldList = []
+      }
+      const newRow = {
+        isDelete: false,
+        _changed: true
+      }
+      this.tableData.fieldList.push(newRow)
+    },
+    doRemoveRow() {
+      // 标记删除状态为 isDeleted = true
+      if (!this.tableData.fieldList) {
+        // 无数据，退出
+        return
+      }
+      const delList = this.tableData.fieldList.filter(t => t._checked)
+      this.tableData.fieldList = this.tableData.fieldList.filter(t => !t._checked)
+      if (!this.tableData.deleteFieldIdList) {
+        this.tableData.deleteFieldIdList = []
+      }
+      this.tableData.deleteFieldIdList.push(...delList.filter(t => t.id).map(t => t.id))
+    }
+  },
 }
 </script>
 

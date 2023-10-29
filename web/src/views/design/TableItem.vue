@@ -1,14 +1,14 @@
 
 <template>
-  <div :class="[this.selected ? 'selected' : '', 'table-item']" @click="doClick(this.data)">
+  <div :class="[this.selected ? 'selected' : '', 'table-item']" @click="doClick(this.table)">
     <div style="display: inline-flex;">
-      <a-checkbox v-model:checked="data._checked" class="selector" v-if="this.checkable"/>
+      <a-checkbox v-model:checked="table._checked" class="selector" v-if="this.checkable"/>
       <div>
-        <div class="label">{{ data.label }}</div>
-        <div class="code">{{ data.code }}</div>
+        <div class="labelDiv">{{ this.table.label }}</div>
+        <div class="codeDiv">{{ this.table.code }}</div>
       </div>
     </div>
-    <a class="operator" @click.stop="doEdit(this.data)">
+    <a class="operator" @click.stop="doEdit(this.table)">
       <EditOutlined/>
     </a>
   </div>
@@ -26,7 +26,7 @@ export default {
     checkable: {
       type: Boolean
     },
-    data: {
+    table: {
       type: Object
     }
   },
@@ -35,7 +35,7 @@ export default {
       this.$emit('edit', obj)
     },
     doClick(obj){
-      this.$emit('click', obj)
+      this.$emit('select', obj)
     }
   }
 }
@@ -49,7 +49,8 @@ export default {
 
 .table-item {
   border-radius: 3px;
-  padding: 2px 4px 2px 4px;
+  padding: 0 4px 0 4px;
+  margin: 2px 0 2px 0;
   display: flex;
   justify-content: space-between;
   vertical-align: middle;
@@ -57,12 +58,14 @@ export default {
 .selector{
   padding-right: 5px;
 }
-.label{
+
+.labelDiv {
   font-size: 10px;
 }
-.code{
+
+.codeDiv {
   font-size: 8px;
-  color: gray;
+  color: rgb(128, 128, 128);
 }
 .operator{
   padding-left: 5px;

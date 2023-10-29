@@ -23,4 +23,8 @@ public class VersionEntity implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     private Timestamp createTime;
+
+    private boolean deleted = false;
+
+    Long projectId;
 }

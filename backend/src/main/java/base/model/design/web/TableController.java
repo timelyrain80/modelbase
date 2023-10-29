@@ -1,6 +1,7 @@
 package base.model.design.web;
 
 import base.model.design.pojo.Table;
+import base.model.design.pojo.TableDto;
 import base.model.design.service.TableService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,8 +28,8 @@ public class TableController {
 
 
     @PostMapping()
-    public ResponseEntity<Table> save(@RequestBody Table table) {
-        return ResponseEntity.ok(this.tableService.saveVersion(table, Table::getTableId, Table::setTableId));
+    public ResponseEntity<Table> save(@RequestBody TableDto table) {
+        return ResponseEntity.ok(this.tableService.saveTable(table));
     }
 
     @PostMapping("delete")
