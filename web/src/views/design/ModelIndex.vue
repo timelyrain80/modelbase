@@ -12,14 +12,14 @@
     <a-layout style="height: 100%">
       <a-layout-sider theme="light" width="300px">
         <a-card title="数据表">
-          <template #extra><a href="#" @click="checkAndOpenTable({})">
+          <template #extra><a href="#" @click="checkAndOpenTable('')">
             <PlusCircleOutlined/>
           </a></template>
           <TableItem v-for="(item,idx) in Array.from(tableMap.values())"
                      :table="item"
                      :checkable="true"
                      :selected="item.tableId === currentTable.tableId"
-                     @select="checkAndOpenTable(item)"/>
+                     @select="checkAndOpenTable(item.tableId)"/>
 
         </a-card>
       </a-layout-sider>
@@ -106,15 +106,16 @@ export default {
     doBack() {
       this.$router.push({path: '/index'})
     },
-    openTable(t) {
-      let table = {}
-      this.table.table = this.tableMap.get(t)
-      if (!this.table.table) {
-        this.table.table = {}
+    openTable(tableId) {
+      let data = {}
+      data.table = this.tableMap.get(tableId)
+      if (!this.currentTable.table) {
+        this.currentTable.table = {}
       }
-      table.fieldList = Array.from(this.fieldMap.values()).filter(t => t.tableId === t)
-
-      this.currentTable = table;
+      data.fieldList = Array.from(this.fieldMap.values()).filter(t => t.tableId == tableId)
+      data.tableId = data.table.tableId
+      this.currentTable = data;
+      console.info(Array.from(this.fieldMap.values()).length, data.fieldList)
     },
     checkAndOpenTable(tableId) {
       if (this.$refs.tableEditPanel.checkModified()) {

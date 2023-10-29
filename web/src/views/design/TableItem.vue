@@ -54,6 +54,7 @@ export default {
   display: flex;
   justify-content: space-between;
   vertical-align: middle;
+  cursor: pointer;
 }
 .selector{
   padding-right: 5px;
