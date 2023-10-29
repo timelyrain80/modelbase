@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="base.model.act.mapper.ProjectUserMapper">
-  <resultMap id="BaseResultMap" type="base.model.act.pojo.ProjectUser">
+<mapper namespace="base.model.design.mapper.ProjectUserMapper">
+  <resultMap id="BaseResultMap" type="base.model.design.pojo.ProjectUser">
     <!--@mbg.generated-->
     <!--@Table project_user-->
     <result column="id" jdbcType="INTEGER" property="id" />

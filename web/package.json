@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@surely-vue/table": "^4.1.13",
     "ant-design-vue": "^4.0.3",
     "axios": "^1.5.1",
     "pinia": "^2.1.6",
