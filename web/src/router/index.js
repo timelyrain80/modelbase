@@ -36,14 +36,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     // 使用了cookie 不再设置导航守卫
     next()
-    // const authed = session.user.isAuthenticated();
-    // if (!to.meta.public && !authed) {
-    //     // 校验令牌
-    //     console.info('校验令牌', authed)
-    //     next({name: 'login'})
-    // } else {
-    //     next()
-    // }
 })
 
 export default router

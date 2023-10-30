@@ -8,17 +8,13 @@
         <div class="codeDiv">{{ this.table.code }}</div>
       </div>
     </div>
-    <a class="operator" @click.stop="doEdit(this.table)">
-      <EditOutlined/>
-    </a>
   </div>
 </template>
 
 <script>
-import EditOutlined from '@ant-design/icons-vue'
 
 export default {
-  components: { EditOutlined },
+  components: {  },
   props: {
     selected: {
       type: Boolean

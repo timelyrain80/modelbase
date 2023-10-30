@@ -12,24 +12,12 @@ public class MybatisAutoFillConfig implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         setFieldValByName("createTime", LocalDateTime.now(), metaObject);
-        Long uid = -1L;
-        try {
-            uid = StpUtil.getLoginId(-1L);
-        } catch (Exception e) {
-
-        }
-        setFieldValByName("createBy", uid, metaObject);
+        setFieldValByName("createBy", StpUtil.getLoginId(-1L), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
-        Long uid = -1L;
-        try {
-            uid = StpUtil.getLoginId(-1L);
-        } catch (Exception e) {
-
-        }
-        setFieldValByName("updateBy", uid, metaObject);
+        setFieldValByName("updateBy", StpUtil.getLoginId(-1L), metaObject);
     }
 }

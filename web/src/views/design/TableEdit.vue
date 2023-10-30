@@ -15,7 +15,7 @@
             <a-input v-model:value="tableData.table.code" placeholder="表编码"
                      @change="this.tableData.table._changed = true"/>
           </a-form-item>
-          <a @click="ctl.editTable = !ctl.editTable" v-if="!ctl.editTable">
+          <a @click="ctl.editTable = !ctl.editTable" v-if="!ctl.editTable && this.tableData.table.tableId">
             <FormOutlined/>
           </a>
         </a-space>
@@ -98,7 +98,7 @@ export default {
     }
   },
   created() {
-    console.info("table edit panel created ")
+
   }
 }
 </script>

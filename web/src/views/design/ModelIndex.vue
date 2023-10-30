@@ -12,13 +12,15 @@
     <a-layout style="height: 100%">
       <a-layout-sider theme="light" width="300px">
         <a-card title="数据表">
-          <template #extra><a href="#" @click="checkAndOpenTable('')">
-            <PlusCircleOutlined/>
-          </a></template>
+          <template #extra>
+            <a href="#" @click="checkAndOpenTable('')">
+              <PlusCircleOutlined />
+            </a>
+          </template>
           <TableItem v-for="(item,idx) in Array.from(tableMap.values())"
                      :table="item"
                      :checkable="true"
-                     :selected="item.tableId === currentTable.tableId"
+                     :selected="item.tableId === currentTable.table.tableId"
                      @select="checkAndOpenTable(item.tableId)"/>
 
         </a-card>
@@ -55,7 +57,6 @@ export default {
       tableMap: new Map(),
       fieldMap: new Map(),
       currentTable: {
-        tableId: null,
         table: {},
         fieldList: []
       },
@@ -109,13 +110,11 @@ export default {
     openTable(tableId) {
       let data = {}
       data.table = this.tableMap.get(tableId)
-      if (!this.currentTable.table) {
-        this.currentTable.table = {}
+      if (!data.table) {
+        data.table = {}
       }
       data.fieldList = Array.from(this.fieldMap.values()).filter(t => t.tableId == tableId)
-      data.tableId = data.table.tableId
       this.currentTable = data;
-      console.info(Array.from(this.fieldMap.values()).length, data.fieldList)
     },
     checkAndOpenTable(tableId) {
       if (this.$refs.tableEditPanel.checkModified()) {
@@ -136,7 +135,5 @@ export default {
 </script>
 
 <style scoped>
-.box {
-  display: flex;
-}
+
 </style>

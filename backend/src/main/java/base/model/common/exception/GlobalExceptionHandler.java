@@ -23,6 +23,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createProblem("内部错误", null);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    ResponseEntity<ProblemDetail> exception(BadRequestException e) {
+        return createProblem(e.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
     @ExceptionHandler(NotLoginException.class)
     ResponseEntity<ProblemDetail> exception(NotLoginException e) {
         return createProblem("登录信息不存在", null, HttpStatus.UNAUTHORIZED.value());

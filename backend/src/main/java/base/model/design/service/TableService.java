@@ -42,6 +42,7 @@ public class TableService extends VersionService<TableMapper, Table> {
         this.lambdaUpdate()
                 .in(Table::getTableId, tableIdList)
                 .eq(Table::getProjectId, projectId)
+                .eq(Table::isDeleted, false)
                 .set(Table::isDeleted, true)
                 .update();
         // 获取更新后的table信息
@@ -58,7 +59,8 @@ public class TableService extends VersionService<TableMapper, Table> {
     public Table saveVersion(Long projectId, Table entity, Function<Table, Long> getter, BiConsumer<Table, Long> setter) {
         // 检查
         long sameCount = this.lambdaQuery()
-                .eq(Table::getProjectId, entity.getProjectId())
+                .eq(Table::getProjectId, projectId)
+                .eq(Table::isDeleted, false)
                 .ne(entity.getTableId() != null, Table::getTableId, entity.getTableId())
                 .and((c1) -> c1.eq(Table::getLabel, entity.getLabel()).or((c2) -> c2.eq(Table::getCode, entity.getCode())))
                 .count();

@@ -23,7 +23,4 @@ public class Table extends VersionEntity {
 
     @Size(max = 100, message = "注释长度不能超过100")
     String comment;
-
-    @TableField(exist = false)
-    Collection<Field> fieldList;
 }
