@@ -71,7 +71,11 @@ export default {
     },
     doReset() {
       this.$refs.tableForm.resetFields()
-      this.tableData._changed = false
+      this.$refs.fieldForm.resetFields()
+      this.tableData.table._changed = false
+      this.tableData.fieldList.forEach(t => {
+        t._changed = false
+      })
     },
     doSave() {
       // 两个表单一起校验
