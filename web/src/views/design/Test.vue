@@ -1,55 +1,20 @@
 <template>
-  <a-tree checkable :tree-data="treeData" block-node="true"  v-model:expandedKeys="key">
-    <template #title="{ title, key , name}">
-      <div>{{ title }}</div>
-      <div v-if="name">{{ name }}</div>
-    </template>
-  </a-tree>
-</template>
-<script>
+  <div>test page</div>
+  <button @click="add">add</button>
+  <div v-for="(item,idx) in tableList">{{ item.label }}</div>
 
-export default {
-  name: "Test.vue",
-  data() {
-    return {
-      key: ['0-0','0-0-0','0-0-0-0'],
-      treeData: [
-        {
-          title: 'parent 1',
-          key: '0-0',
-          name: 'test name',
-          children: [
-            {
-              title: 'parent 1-0',
-              key: '0-0-0',
-              disabled: true,
-              children: [
-                {
-                  title: 'leaf',
-                  key: '0-0-0-0',
-                  name: 'is leaf',
-                  disableCheckbox: true,
-                },
-                {
-                  title: 'leaf',
-                  key: '0-0-0-1',
-                },
-              ],
-            },
-            {
-              title: 'parent 1-1',
-              key: '0-0-1',
-              children: [
-                {
-                  key: '0-0-1-0',
-                  title: 'sss',
-                },
-              ],
-            },
-          ],
-        },
-      ]
-    }
-  }
+
+</template>
+<script setup>
+import {tableStore} from "@/stores/stores";
+import {computed} from "vue";
+
+const tableList = computed(() => {
+  return tableStore().list()
+})
+
+function add() {
+  tableStore().set({tableId: Math.random(), label: Math.random()})
 }
+
 </script>
