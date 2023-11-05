@@ -46,8 +46,10 @@ import {computed, onMounted, ref} from "vue";
 import projectStore from "@/stores/stores";
 import {message, Modal} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
+import sseReq from "@/request/sse";
 
 const project = ref({id: ''}) // 项目信息
+const sse = ref(null) // 项目信息
 const currentTable = ref({}) // 当前选中的table定义
 // 计算属性
 const tableList = computed(() => {
@@ -60,6 +62,7 @@ const onlineUserList = computed(() => {
 const tableEditPanel = ref()
 onMounted(() => {
   doQuery()
+  sse.value = sseReq.open(useRoute().params.id)
 })
 
 function doBack() {

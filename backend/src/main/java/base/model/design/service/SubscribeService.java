@@ -19,21 +19,24 @@ public class SubscribeService {
     private void init() {
         ActDto<Object> heartBeat = ActDto.heartBeat();
         new Thread(() -> {
-            // 发送一个心跳消息，将所有断连的emitter删除
-            emitterList.forEach(t -> {
-                try {
-                    t.send(heartBeat);
-                } catch (Exception e) {
+            while(!Thread.interrupted()) {
+                log.info("heart beat");
+                // 发送一个心跳消息，将所有断连的emitter删除
+                emitterList.forEach(t -> {
+                    try {
+                        t.send(heartBeat);
+                    } catch (Exception e) {
 
+                    }
+                });
+                try {
+                    Thread.sleep(6 * 1000);
+                } catch (Exception e) {
+                    log.error("sse 心跳线程退出", e);
+                    throw new RuntimeException(e);
                 }
-            });
-            try {
-                Thread.sleep(60 * 1000);
-            } catch (Exception e) {
-                log.error("sse 心跳线程退出", e);
-                throw new RuntimeException(e);
             }
-        });
+        }).start();
     }
 
     public void addEmitter(ProjectEmitter e) {
@@ -49,7 +52,9 @@ public class SubscribeService {
                 .forEach(t -> {
                     try {
                         t.send(actDto);
+                        log.debug("message {} send to {}", actDto.toString(), t.toString());
                     } catch (Exception e) {
+                        log.error("send message error", e);
                     }
                 });
 

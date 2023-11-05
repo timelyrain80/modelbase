@@ -51,7 +51,7 @@ function doSave() {
       Object.assign(props.tableData, ok.data)
       isEdit.value = false
     }, err=>{
-
+      message.error(err.title)
     })
 
   })

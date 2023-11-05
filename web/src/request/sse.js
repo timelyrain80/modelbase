@@ -1,9 +1,10 @@
 import projectStore from '../stores/stores.js'
 
+
 function open(projectId) {
     const action = [new TableAction()]
 
-    const sse = new EventSource(`api/project/event/${projectId}`)
+    const sse = new EventSource(`/api/project/event/${projectId}`)
     sse.onopen = (e) => {
         console.info('sse opened')
     }
@@ -23,6 +24,7 @@ function open(projectId) {
             }
         })
     }
+    return sse
 }
 
 export default {open}

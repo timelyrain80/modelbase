@@ -5,9 +5,12 @@ import base.model.design.pojo.ProjectDetailDto;
 import base.model.design.pojo.ProjectEmitter;
 import base.model.design.service.ProjectService;
 import base.model.common.ModelConstants;
+import base.model.design.service.SubscribeService;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -18,10 +21,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(ModelConstants.API_PREFIX + "/project")
 public class ProjectController {
     @Resource
-    private ProjectService service;
+    final ProjectService service;
+    final SubscribeService subscribeService;
 
     @PostMapping("save")
     ResponseEntity<Boolean> save(@Validated @RequestBody Project project) {
@@ -51,10 +56,11 @@ public class ProjectController {
         return ResponseEntity.ok(service.queryDetail(projectId));
     }
 
-    @GetMapping("event/{id}" produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter sse(@PathVariable("id") Long projectId) {
+    @GetMapping(value = "event/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter sse(@PathVariable("id") Long projectId, HttpServletRequest request) {
         SseEmitter s = new SseEmitter(0L);
-        subscribeService.addEmitter(new ProjectEmitter(projectId));
+        Long userId = StpUtil.getLoginId(-1L);
+        subscribeService.addEmitter(new ProjectEmitter(projectId, userId));
         return s;
     }
 
