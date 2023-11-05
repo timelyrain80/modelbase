@@ -1,34 +1,5 @@
 import projectStore from '../stores/stores.js'
 
-
-function open(projectId) {
-    const action = [new TableAction()]
-
-    const sse = new EventSource(`/api/project/event/${projectId}`)
-    sse.onopen = (e) => {
-        console.info('sse opened')
-    }
-    sse.onerror = (e) => {
-        console.error(e)
-    }
-    sse.onmessage = (e) => {
-        const data = e.data
-        console.info(data)
-        action.forEach(act => {
-            if (act.support(data.type)) {
-                if (data.act === 1) {
-                    act.save(data)
-                } else if (data.act === -1) {
-                    act.delete(data)
-                }
-            }
-        })
-    }
-    return sse
-}
-
-export default {open}
-
 class Action {
     support(type) {
         throw new Error('基类方法不能调用')
@@ -71,3 +42,29 @@ class OnlineUserAction extends Action {
         projectStore.onlineUserStore().remove(data.obj.userId)
     }
 }
+const action = [new TableAction()]
+function open(projectId) {
+    const sse = new EventSource(`/api/project/event/${projectId}`)
+    sse.onopen = (e) => {
+        console.info('sse opened')
+    }
+    sse.onerror = (e) => {
+        console.error(e)
+    }
+    sse.onmessage = (e) => {
+        const data = JSON.parse(e.data)
+        console.info('sse on message',data, 'actions', action)
+        action.forEach(act => {
+            if (act.support(data.type)) {
+                if (data.act === 1) {
+                    act.save(data)
+                } else if (data.act === -1) {
+                    act.delete(data)
+                }
+            }
+        })
+    }
+    return sse
+}
+
+export default {open}

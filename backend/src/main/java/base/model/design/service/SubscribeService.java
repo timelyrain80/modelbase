@@ -19,14 +19,14 @@ public class SubscribeService {
     private void init() {
         ActDto<Object> heartBeat = ActDto.heartBeat();
         new Thread(() -> {
-            while(!Thread.interrupted()) {
-                log.info("heart beat");
+            while (!Thread.interrupted()) {
+                log.info("heart beat {}", emitterList.size());
                 // 发送一个心跳消息，将所有断连的emitter删除
                 emitterList.forEach(t -> {
                     try {
                         t.send(heartBeat);
                     } catch (Exception e) {
-
+                        log.error("heart beat error", e);
                     }
                 });
                 try {

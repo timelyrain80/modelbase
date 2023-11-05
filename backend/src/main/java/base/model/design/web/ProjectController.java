@@ -58,9 +58,9 @@ public class ProjectController {
 
     @GetMapping(value = "event/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter sse(@PathVariable("id") Long projectId, HttpServletRequest request) {
-        SseEmitter s = new SseEmitter(0L);
         Long userId = StpUtil.getLoginId(-1L);
-        subscribeService.addEmitter(new ProjectEmitter(projectId, userId));
+        ProjectEmitter s = new ProjectEmitter(projectId, userId);
+        subscribeService.addEmitter(s);
         return s;
     }
 
