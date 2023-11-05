@@ -24,7 +24,7 @@ public class TableController {
 
 
     @PostMapping()
-    public ResponseEntity<TableDto> save(@RequestBody TableDto table) {
+    public ResponseEntity<Table> save(@RequestBody TableDto table) {
         return ResponseEntity.ok(this.tableService.saveTable(table));
     }
 

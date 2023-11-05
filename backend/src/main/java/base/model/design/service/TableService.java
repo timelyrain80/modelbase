@@ -70,28 +70,18 @@ public class TableService extends VersionService<TableMapper, Table> {
         return table;
     }
 
-    public TableDto saveTable(TableDto table) {
+    public Table saveTable(TableDto table) {
         // todo 检查是否存在越权
 
 
         // 判断并保存table
-        if (table.getTable() != null) {
-            Table entity = new Table();
-            BeanUtils.copyProperties(table.getTable(), entity);
-            // 有tableId的时候 新增版本。无tableId 生成新的tableId ，保存初始版本
-            Table saved = this.saveVersion(table.getProjectId(), entity, Table::getTableId, Table::setTableId);
-            table.setTableId(saved.getTableId());
-            table.setTable(saved);
+        if (table.getTable() == null) {
+            return new Table();
         }
-        // 判断并保存field
-        if (table.getFieldList() != null) {
-            for (Field f : table.getFieldList()) {
-                f.setTableId(table.getTableId());
-                fieldService.saveVersion(table.getProjectId(), f, Field::getFieldId, Field::setFieldId);
-            }
-        }
-        // 删除字段
-        fieldService.updateForDeleteField(table.getProjectId(), table.getDeleteFieldIdList());
-        return table;
+        Table entity = new Table();
+        BeanUtils.copyProperties(table.getTable(), entity);
+        // 有tableId的时候 新增版本。无tableId 生成新的tableId ，保存初始版本
+        return this.saveVersion(table.getProjectId(), entity, Table::getTableId, Table::setTableId);
+
     }
 }

@@ -24,7 +24,7 @@ const tableStore = defineStore('tableStore', () => {
         return Array.from(map.value.values())
     }
 
-    return {map, set, get, list}
+    return {map, set, get, remove, list}
 })
 const fieldStore = defineStore('fieldStore', () => {
     const map = ref(new Map())

@@ -4,7 +4,7 @@
 
     <select id="queryLatestTable" resultType="base.model.design.pojo.Table">
         select *
-        from (select t.*, row_number() over (partition by table_id order by create_time, id desc) as rn
+        from (select t.*, row_number() over (partition by table_id order by create_time desc, id desc) as rn
               from m_table t
               where t.project_id = #{projectId}) v
         where v.rn = 1

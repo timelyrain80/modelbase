@@ -2,15 +2,18 @@ package base.model.design.web;
 
 import base.model.design.pojo.Project;
 import base.model.design.pojo.ProjectDetailDto;
+import base.model.design.pojo.ProjectEmitter;
 import base.model.design.service.ProjectService;
 import base.model.common.ModelConstants;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -47,4 +50,12 @@ public class ProjectController {
         Assert.state(projectId != null, "参数不合法");
         return ResponseEntity.ok(service.queryDetail(projectId));
     }
+
+    @GetMapping("event/{id}" produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter sse(@PathVariable("id") Long projectId) {
+        SseEmitter s = new SseEmitter(0L);
+        subscribeService.addEmitter(new ProjectEmitter(projectId));
+        return s;
+    }
+
 }

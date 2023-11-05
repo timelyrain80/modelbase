@@ -28,9 +28,9 @@
       </a-layout-sider>
       <a-layout>
         <a-layout-content>
-          <!--          <TableEdit :project-id="project.id"-->
-          <!--                     :table-data="currentTable"-->
-          <!--                     ref="tableEditPanel"/>-->
+          <TableEdit :project-id="project.id"
+                     :table-data="currentTable"
+                     ref="tableEditPanel"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -57,7 +57,7 @@ const onlineUserList = computed(() => {
   return projectStore.onlineUserStore().list()
 })
 // 模板引用
-const tableEditPanel = ref(null)
+const tableEditPanel = ref()
 onMounted(() => {
   doQuery()
 })
@@ -104,25 +104,31 @@ function doQuery() {
 
 function openTable(tableId) {
   const data = {}
-  const tb = projectStore.tableStore().get(tableId);
-  if (tb) {
-    Object.assign({}, tb)
+  if(tableId) {
+    const tb = projectStore.tableStore().get(tableId);
+    if (tb) {
+      Object.assign(data, tb)
+    }
+    currentTable.value = data;
+  }else{
+    currentTable.value = data;
+    tableEditPanel.value.doEdit({})
   }
-  currentTable.value = tb;
 }
 
 function checkAndOpenTable(tableId) {
-  if (tableEditPanel.value.checkModified()) {
-    Modal.confirm({
-      title: '数据表已修改',
-      content: '是否放弃修改的内容?',
-      onOk: () => {
-        openTable(tableId)
-      }
-    })
-  } else {
-    openTable(tableId)
-  }
+  // if (tableEditPanel.value.checkModified()) {
+  //   Modal.confirm({
+  //     title: '数据表已修改',
+  //     content: '是否放弃修改的内容?',
+  //     onOk: () => {
+  //       openTable(tableId)
+  //     }
+  //   })
+  // } else {
+  //   openTable(tableId)
+  // }
+  openTable(tableId)
 }
 
 </script>
