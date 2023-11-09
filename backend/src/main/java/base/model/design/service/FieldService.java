@@ -11,8 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -59,5 +59,12 @@ public class FieldService extends VersionService<FieldMapper, Field> {
 
     public Collection<Field> queryLatestField(Long projectId) {
         return this.getBaseMapper().queryLatestField(projectId);
+    }
+
+    public List<Field> queryLatestField(Collection<Long> tableIdList) {
+        if (tableIdList == null || tableIdList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.getBaseMapper().queryLatestFieldByTableIdList(tableIdList);
     }
 }

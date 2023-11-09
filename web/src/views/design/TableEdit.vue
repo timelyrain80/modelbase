@@ -6,9 +6,6 @@
     <template #subTitle>
       {{ tableData.code }}
     </template>
-    <template #extra>
-      <a-button @click="doEdit(tableData)" type="primary">{{ title }}</a-button>
-    </template>
   </a-page-header>
   <a-modal :title="title" v-model:open="isEdit" @ok="doSave" :mask-closable="false">
     <a-form :model="formData" ref="form1">
@@ -20,6 +17,9 @@
       </a-form-item>
     </a-form>
   </a-modal>
+
+  <FieldEdit :project-id="tableData.projectId"
+             :table-id="tableData.tableId"/>
 </template>
 
 <script setup>
@@ -27,6 +27,7 @@ import {FormOutlined} from "@ant-design/icons-vue";
 import {message} from "ant-design-vue";
 import tableReq from "@/request/table";
 import {ref, defineProps, computed, onMounted} from "vue";
+import FieldEdit from "@/views/design/FieldEdit.vue";
 
 const props = defineProps({tableData: Object, projectId: String})
 // 响应对象

@@ -12,7 +12,7 @@ public class ActDto<T> {
     Long projectId;
     T obj;
     /**
-     * 执行动作 1=保存，-1=删除
+     * 执行动作 1=保存，-1=删除 0=heart beat
      */
     int act; //
 
@@ -24,7 +24,7 @@ public class ActDto<T> {
         return new ActDto<>(obj.getClass().getSimpleName(), projectId, obj, 1);
     }
     public static <T> ActDto<T> heartBeat() {
-        return new ActDto<>("heartBeat",null,null, 1);
+        return new ActDto<>("heartBeat", null, null, 0);
     }
 
 }

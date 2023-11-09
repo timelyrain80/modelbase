@@ -26,6 +26,7 @@ public class SubscribeService {
                     try {
                         t.send(heartBeat);
                     } catch (Exception e) {
+                        emitterList.remove(t);
                         log.error("heart beat error", e);
                     }
                 });

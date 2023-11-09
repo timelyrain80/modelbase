@@ -1,0 +1,100 @@
+{
+  "id": "4294804",
+  "name": "modelbase",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "37734109",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "37734114",
+      "name": "eye",
+      "font_class": "eye",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "37734115",
+      "name": "content",
+      "font_class": "content",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "37734117",
+      "name": "edit",
+      "font_class": "edit",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "37734124",
+      "name": "eye-off",
+      "font_class": "eye-off",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "37734125",
+      "name": "delete2",
+      "font_class": "delete2",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "37734127",
+      "name": "export",
+      "font_class": "export",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "37734128",
+      "name": "chat-settings",
+      "font_class": "chat-settings",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "37734131",
+      "name": "plus",
+      "font_class": "plus",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "37734136",
+      "name": "plus-circle",
+      "font_class": "plus-circle",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "37734139",
+      "name": "new-edit",
+      "font_class": "new-edit",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "37734141",
+      "name": "new-role",
+      "font_class": "new-role",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "37734145",
+      "name": "plugin",
+      "font_class": "plugin",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    }
+  ]
+}

@@ -9,4 +9,16 @@
               where t.project_id = #{projectId}) v
         where v.rn = 1
     </select>
+
+    <select id="queryLatestFieldByTableIdList" resultType="base.model.design.pojo.Field">
+        select *
+        from (select t.*, row_number() over (partition by table_id, field_id order by create_time desc, id desc) as rn
+              from m_field t
+              where t.table_id in
+             <foreach collection="tableIdList" item="tableId" open="(" separator="," close=")">
+                #{tableId}
+             </foreach>
+             ) v
+        where v.rn = 1
+    </select>
 </mapper>

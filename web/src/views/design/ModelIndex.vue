@@ -31,9 +31,13 @@
           <TableEdit :project-id="project.id"
                      :table-data="currentTable"
                      ref="tableEditPanel"/>
+
         </a-layout-content>
       </a-layout>
     </a-layout>
+    <a-modal v-model:open="ctrl.connectionBreak" @ok="window.location.reload()" :maskClosable="false">
+      与服务器的连接中断，请点击ok刷新
+    </a-modal>
   </div>
 </template>
 
@@ -44,10 +48,12 @@ import TableItem from "@/views/design/TableItem.vue";
 import projectReq from "@/request/Project";
 import {computed, onMounted, ref} from "vue";
 import projectStore from "@/stores/stores";
-import {message, Modal} from "ant-design-vue";
+import {message} from "ant-design-vue";
 import {useRoute, useRouter} from "vue-router";
 import sseReq from "@/request/sse";
+import FieldEdit from "@/views/design/FieldEdit.vue";
 
+const ctrl = ref({connectionBreak: false})
 const project = ref({id: ''}) // 项目信息
 const sse = ref(null) // 项目信息
 const currentTable = ref({}) // 当前选中的table定义
@@ -63,6 +69,11 @@ const tableEditPanel = ref()
 onMounted(() => {
   doQuery()
   sse.value = sseReq.open(useRoute().params.id)
+  sse.value.onerror = (e) => {
+    console.error(e)
+    // 打开遮罩
+    ctrl.value.connectionBreak = true
+  }
 })
 
 function doBack() {
@@ -107,13 +118,13 @@ function doQuery() {
 
 function openTable(tableId) {
   const data = {}
-  if(tableId) {
+  if (tableId) {
     const tb = projectStore.tableStore().get(tableId);
     if (tb) {
       Object.assign(data, tb)
     }
     currentTable.value = data;
-  }else{
+  } else {
     currentTable.value = data;
     tableEditPanel.value.doEdit({})
   }

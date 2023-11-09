@@ -6,9 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 @Mapper
 public interface FieldMapper extends BaseMapper<Field> {
     Collection<Field> queryLatestField(@Param("projectId") Long projectId);
 
+    List<Field> queryLatestFieldByTableIdList(@Param("tableIdList") Collection<Long> tableIdList);
 }
